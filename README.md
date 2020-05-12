@@ -20,7 +20,7 @@ jobs:
       steps:
         - uses: actions/checkout@v2
         - name: PHPCS check
-          uses: chekalsky/phpcs-action@v1
+          uses: chekalsky/phpcs-action@v2
 ```
 
 If you want to check only files changed in the PR
@@ -28,7 +28,7 @@ If you want to check only files changed in the PR
 ```yaml
         ...
         - name: PHPCS check
-          uses: chekalsky/phpcs-action@v1
+          uses: Mediotype/phpcs-action@v2
           with:
             only_changed_files: true
 ```
@@ -38,7 +38,7 @@ Eventually you could also check for warnings.
 ```yaml
         ...
         - name: PHPCS check
-          uses: chekalsky/phpcs-action@v1
+          uses: Mediotype/phpcs-action@v2
           with:
             enable_warnings: true
 ```
@@ -57,7 +57,7 @@ It will also change phpcs `installed_paths` setting, but will prefer local phpcs
         - name: Install dependencies
           run: composer install --dev --prefer-dist --no-progress --no-suggest
         - name: PHPCS check
-          uses: chekalsky/phpcs-action@v1
+          uses: Mediotype/phpcs-action@v2
           with:
             phpcs_bin_path: './vendor/bin/phpcs'
 ```
@@ -67,7 +67,7 @@ It will also change phpcs `installed_paths` setting, but will prefer local phpcs
 ```yaml
         ...
         - name: PHPCS check
-          uses: chekalsky/phpcs-action@v1
+          uses: Mediotype/phpcs-action@v2
           with:
             installed_paths: '${{ github.workspace }}/vendor/phpcompatibility/php-compatibility'
 ```
