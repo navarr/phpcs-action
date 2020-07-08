@@ -20,14 +20,11 @@ inputs:
     default: ''
   token:
     description: >
-      Personal access token (PAT) used to fetch the repository. The PAT is stored
-      in memory and used to ask the Github API for a list of files changed in
-      the PR.
+      GitHub automatically creates a GITHUB_TOKEN secret to use in your workflow. This input
+      is used to pass the secret to the workflow.
 
-      We recommend using a service account with the least permissions necessary.
-      Also when generating a new PAT, select the least scopes necessary.
+      [For more information reference this docs page](https://docs.github.com/en/actions/configuring-and-managing-workflows/authenticating-with-the-github_token)
 
-      [Learn more about creating and using encrypted secrets](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets)
     required: false
     default: ${{ github.token }}
 runs:
