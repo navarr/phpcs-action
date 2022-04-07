@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euo pipefail
+set -euo
 diff-lines() {
     local path=
     local line=
@@ -23,6 +23,7 @@ filter-by-changed-lines() {
     changedLines=$1;
     local fileName=
     local fileLine=
+    local exitCode=0
 
     echo "Debug Changed Lines:"
     echo "${changedLines[*]}"
@@ -35,12 +36,14 @@ filter-by-changed-lines() {
         elif [[ $line =~ \<error\ line=\"([^\"]+) ]]; then
             fileLine=${BASH_REMATCH[1]}
             if [[ "${changedLines[*]}" =~ "${fileName}:${fileLine}" ]]; then
+                exitCode=1
                 echo "${line}"
             fi
         else
             echo "${line}"
         fi
     done
+    exit $exitCode
 }
 
 COMPARE_FROM=origin/${GITHUB_HEAD_REF}
@@ -88,7 +91,7 @@ if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
     step3=$(echo "${step2}" | grep -ve ':-')
     echo "${step3}"
     echo "DEBUG SED"
-    step4=$(echo "${step3}" | sed 's/:\\+.*//')
+    step4=$(echo "${step3}" | sed 's/:+.*//')
     echo "${step4}"
     set +e # we want to potentially change the error code
     echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} ${ENABLE_WARNINGS_FLAG} --report=checkstyle | filter-by-changed-lines "${step4}"
