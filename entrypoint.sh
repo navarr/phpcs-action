@@ -79,9 +79,19 @@ fi
 set +e
 if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
     echo "DEBUG DIFF U0"
-    git diff -U0 "${COMPARE_FROM_REF}" "${COMPARE_TO_REF}"
-    echo "END DEBUG"
-    echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} ${ENABLE_WARNINGS_FLAG} --report=checkstyle | filter-by-changed-lines "$(git diff -U0 "${COMPARE_FROM_REF}" "${COMPARE_TO_REF}" | diff-lines | grep -ve ':-' | sed 's/:\+.*//')"
+    step1=$(git diff -U0 "${COMPARE_FROM_REF}" "${COMPARE_TO_REF}")
+    echo "${step1}"
+    echo "DEBUG DIFF-LINES"
+    step2=$(echo "${step1}" | diff-lines)
+    echo "${step2}"
+    echo "DEBUG GREP"
+    step3=$(echo "${step2}" | grep -ve ':-')
+    echo "${step3}"
+    echo "DEBUG SED"
+    step4=$(echo "${step3}" | sed 's/:\+.*//')
+    echo "${step4}"
+    set +e # we want to potentially change the error code
+    echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} ${ENABLE_WARNINGS_FLAG} --report=checkstyle | filter-by-changed-lines "${step4}"
 else
     ${INPUT_PHPCS_BIN_PATH} ${ENABLE_WARNINGS_FLAG} --report=checkstyle
 fi
