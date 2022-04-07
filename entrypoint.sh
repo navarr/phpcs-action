@@ -78,6 +78,9 @@ fi
 
 set +e
 if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
+    echo "DEBUG DIFF U0"
+    git diff -U0 "${COMPARE_FROM_REF}" "${COMPARE_TO_REF}"
+    echo "END DEBUG"
     echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} ${ENABLE_WARNINGS_FLAG} --report=checkstyle | filter-by-changed-lines "$(git diff -U0 "${COMPARE_FROM_REF}" "${COMPARE_TO_REF}" | diff-lines | grep -ve ':-' | sed 's/:\+.*//')"
 else
     ${INPUT_PHPCS_BIN_PATH} ${ENABLE_WARNINGS_FLAG} --report=checkstyle
