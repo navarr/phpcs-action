@@ -48,6 +48,8 @@ COMPARE_TO=origin/${GITHUB_HEAD_REF}
 COMPARE_FROM_REF=$(git merge-base "${COMPARE_FROM}" "${COMPARE_TO}")
 COMPARE_TO_REF=${COMPARE_TO}
 
+INPUT_ONLY_CHANGED_FILES=${INPUT_ONLY_CHANGED_FILES:${INPUT_ONLY_CHANGED_LINES:-"false"}}
+
 cp /action/problem-matcher.json /github/workflow/problem-matcher.json
 
 echo "::add-matcher::${RUNNER_TEMP}/_github_workflow/problem-matcher.json"
@@ -77,18 +79,23 @@ fi
 
 set +e
 if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
-    step1=$(git diff -U0 "${COMPARE_FROM_REF}" "${COMPARE_TO_REF}")
-    step2=$(echo "${step1}" | diff-lines)
-    step3=$(echo "${step2}" | grep -ve ':-')
-    step4=$(echo "${step3}" | sed 's/:+.*//') # On some platforms, sed needs to have + escaped.  This isn't the case for Alpine sed.
-    echo $step4
-    set +e # we want to potentially change the error code
-    echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} ${ENABLE_WARNINGS_FLAG} --report=checkstyle | filter-by-changed-lines "${step4}"
+    if [ "${INPUT_ONLY_CHANGED_LINES}" = "true" ]; then
+        step1=$(git diff -U0 "${COMPARE_FROM_REF}" "${COMPARE_TO_REF}")
+        step2=$(echo "${step1}" | diff-lines)
+        step3=$(echo "${step2}" | grep -ve ':-')
+        step4=$(echo "${step3}" | sed 's/:+.*//') # On some platforms, sed needs to have + escaped.  This isn't the case for Alpine sed.
+        set +e
+        echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} ${ENABLE_WARNINGS_FLAG} --report=checkstyle | filter-by-changed-lines "${step4}"
+        status=$?
+        set -e
+    else
+        echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} ${ENABLE_WARNINGS_FLAG} --report=checkstyle
+        status=$?
+    fi
 else
     ${INPUT_PHPCS_BIN_PATH} ${ENABLE_WARNINGS_FLAG} --report=checkstyle
+    status=$?
 fi
-
-status=$?
 
 echo "::remove-matcher owner=phpcs::"
 

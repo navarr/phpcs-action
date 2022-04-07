@@ -23,7 +23,7 @@ jobs:
           uses: chekalsky/phpcs-action@v2
 ```
 
-If you want to check only files changed in the PR
+If you want to check only files changed in the PR (**NOTE**: This requires checkout with depth 0)
 
 ```yaml
         ...
@@ -31,6 +31,16 @@ If you want to check only files changed in the PR
           uses: Mediotype/phpcs-action@v2
           with:
             only_changed_files: true
+```
+
+Or, if you want to limit it even further, you can report on only changed lines:
+
+```yaml
+        ...
+        - name: PHPCS check
+          uses: Mediotype/phpcs-action@v2
+          with:
+            only_changed_lines: true
 ```
 
 Eventually you could also check for warnings.
