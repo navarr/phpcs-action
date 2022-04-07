@@ -20,7 +20,7 @@ jobs:
       steps:
         - uses: actions/checkout@v2
         - name: PHPCS check
-          uses: chekalsky/phpcs-action@v2
+          uses: navarr/phpcs-action@v2
 ```
 
 If you want to check only files changed in the PR (**NOTE**: This requires checkout with depth 0)
