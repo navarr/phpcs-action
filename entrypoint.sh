@@ -45,7 +45,7 @@ echo "::add-matcher::${RUNNER_TEMP}/_github_workflow/problem-matcher.json"
 if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
     echo "Will only check changed files"
     if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
-        CHANGED_FILES=$(git diff --name-only "${GITHUB_HEAD_REF}" "${GITHUB_BASE_REF}")
+        CHANGED_FILES=$(git diff --name-only "${GITHUB_SHA}" "${GITHUB_BASE_REF}")
     else
         CHANGED_FILES=$(git diff --name-only)
     fi
