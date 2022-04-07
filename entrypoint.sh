@@ -45,8 +45,8 @@ filter-by-changed-lines() {
 COMPARE_FROM=origin/${GITHUB_BASE_REF}
 COMPARE_TO=origin/${GITHUB_HEAD_REF}
 
-COMPARE_FROM_REF=${COMPARE_FROM}
-COMPARE_TO_REF=$(git merge-base "${COMPARE_FROM}" "${COMPARE_TO}")
+COMPARE_FROM_REF=$(git merge-base "${COMPARE_FROM}" "${COMPARE_TO}")
+COMPARE_TO_REF=${COMPARE_TO}
 
 cp /action/problem-matcher.json /github/workflow/problem-matcher.json
 
