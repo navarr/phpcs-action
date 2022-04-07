@@ -38,6 +38,9 @@ filter-by-changed-lines() {
     done
 }
 
+COMPARE_FROM=origin/${GITHUB_HEAD_REF}
+COMPARE_TO=origin/${GITHUB_BASE_REF}
+
 cp /action/problem-matcher.json /github/workflow/problem-matcher.json
 
 echo "::add-matcher::${RUNNER_TEMP}/_github_workflow/problem-matcher.json"
@@ -45,7 +48,7 @@ echo "::add-matcher::${RUNNER_TEMP}/_github_workflow/problem-matcher.json"
 if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
     echo "Will only check changed files"
     if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
-        CHANGED_FILES=$(git diff --name-only "${GITHUB_HEAD_REF}" "${GITHUB_BASE_REF}")
+        CHANGED_FILES=$(git diff --name-only "${COMPARE_FROM}" "${COMPARE_TO}")
     else
         CHANGED_FILES=$(git diff --name-only)
     fi
@@ -69,7 +72,7 @@ set +e
 if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
     echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} ${ENABLE_WARNINGS_FLAG} --report=checkstyle
 else
-    ${INPUT_PHPCS_BIN_PATH} ${ENABLE_WARNINGS_FLAG} --report=checkstyle | filter-by-changed-lines "$(git diff -U0 HEAD 'HEAD^^' | diff-lines | grep -ve ':-' | sed 's/:\+.*//')"
+    ${INPUT_PHPCS_BIN_PATH} ${ENABLE_WARNINGS_FLAG} --report=checkstyle | filter-by-changed-lines "$(git diff -U0 "${COMPARE_FROM}" "${COMPARE_TO}" | diff-lines | grep -ve ':-' | sed 's/:\+.*//')"
 fi
 
 status=$?
