@@ -81,6 +81,7 @@ if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
     step2=$(echo "${step1}" | diff-lines)
     step3=$(echo "${step2}" | grep -ve ':-')
     step4=$(echo "${step3}" | sed 's/:+.*//') # On some platforms, sed needs to have + escaped.  This isn't the case for Alpine sed.
+    echo $step4
     set +e # we want to potentially change the error code
     echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} ${ENABLE_WARNINGS_FLAG} --report=checkstyle | filter-by-changed-lines "${step4}"
 else
