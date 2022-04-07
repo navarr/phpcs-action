@@ -1,11 +1,9 @@
 FROM cytopia/phpcs:3
 
-RUN apk add --no-cache jq
+RUN apk add --no-cache bash git
 
 COPY entrypoint.sh \
      problem-matcher.json \
      /action/
 
-RUN chmod +x /action/entrypoint.sh
-
-ENTRYPOINT ["/action/entrypoint.sh"]
+ENTRYPOINT ["/bin/bash", "/action/entrypoint.sh"]
