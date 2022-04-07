@@ -25,10 +25,6 @@ filter-by-changed-lines() {
     local fileLine=
     local exitCode=0
 
-    echo "Debug Changed Lines:"
-    echo "${changedLines[*]}"
-    echo "End Debug"
-
     while read -r line; do
         if [[ $line =~ \<file\ name=\"(\/github\/workspace\/)?([^\"]+) ]]; then
             fileName=${BASH_REMATCH[2]}
@@ -46,8 +42,8 @@ filter-by-changed-lines() {
     exit $exitCode
 }
 
-COMPARE_FROM=origin/${GITHUB_HEAD_REF}
-COMPARE_TO=origin/${GITHUB_BASE_REF}
+COMPARE_FROM=origin/${GITHUB_BASE_REF}
+COMPARE_TO=origin/${GITHUB_HEAD_REF}
 
 COMPARE_FROM_REF=${COMPARE_FROM}
 COMPARE_TO_REF=$(git merge-base "${COMPARE_FROM}" "${COMPARE_TO}")
@@ -81,18 +77,10 @@ fi
 
 set +e
 if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
-    echo "DEBUG DIFF U0"
     step1=$(git diff -U0 "${COMPARE_FROM_REF}" "${COMPARE_TO_REF}")
-    echo "${step1}"
-    echo "DEBUG DIFF-LINES"
     step2=$(echo "${step1}" | diff-lines)
-    echo "${step2}"
-    echo "DEBUG GREP"
     step3=$(echo "${step2}" | grep -ve ':-')
-    echo "${step3}"
-    echo "DEBUG SED"
-    step4=$(echo "${step3}" | sed 's/:+.*//')
-    echo "${step4}"
+    step4=$(echo "${step3}" | sed 's/:\+.*//') # On some platforms, sed needs to have + escaped.  This isn't the case for Alpine sed.
     set +e # we want to potentially change the error code
     echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} ${ENABLE_WARNINGS_FLAG} --report=checkstyle | filter-by-changed-lines "${step4}"
 else
