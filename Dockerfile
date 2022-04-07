@@ -1,6 +1,6 @@
 FROM cytopia/phpcs:3
 
-RUN apk add --no-cache jq
+RUN apk add --no-cache bash
 
 COPY entrypoint.sh \
      problem-matcher.json \
