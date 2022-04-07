@@ -23,6 +23,11 @@ filter-by-changed-lines() {
     changedLines=$1;
     local fileName=
     local fileLine=
+
+    echo "Debug Changed Lines:"
+    echo "${changedLines[*]}"
+    echo "End Debug"
+
     while read -r line; do
         if [[ $line =~ \<file\ name=\"(\/github\/workspace\/)?([^\"]+) ]]; then
             fileName=${BASH_REMATCH[2]}
