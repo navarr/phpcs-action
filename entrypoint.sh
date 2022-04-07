@@ -42,8 +42,6 @@ cp /action/problem-matcher.json /github/workflow/problem-matcher.json
 
 echo "::add-matcher::${RUNNER_TEMP}/_github_workflow/problem-matcher.json"
 
-git fetch --depth=1 origin "${GITHUB_HEAD_REF}" "${GITHUB_BASE_REF}"
-
 if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
     echo "Will only check changed files"
     if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
