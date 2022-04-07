@@ -1,6 +1,6 @@
-name: 'PHP_CodeSniffer Check with Annotations'
-description: 'PHPCS checker with auto annotations out of the box'
-author: 'Ilya Chekalsky'
+name: 'PHP_CodeSniffer Annotations'
+description: 'Commit and Pull Request annotations for PHP Code Sniffer rulesets'
+author: 'Navarr Barnier'
 inputs:
   enable_warnings:
     description: 'Enable checking for warnings (-w)'
