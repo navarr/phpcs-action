@@ -88,7 +88,7 @@ if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
     step3=$(echo "${step2}" | grep -ve ':-')
     echo "${step3}"
     echo "DEBUG SED"
-    step4=$(echo "${step3}" | sed 's/:\+.*//')
+    step4=$(echo "${step3}" | sed 's/:\\+.*//')
     echo "${step4}"
     set +e # we want to potentially change the error code
     echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} ${ENABLE_WARNINGS_FLAG} --report=checkstyle | filter-by-changed-lines "${step4}"
