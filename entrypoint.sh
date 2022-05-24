@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euo
+set -eo
 diff-lines() {
     local path=
     local line=
