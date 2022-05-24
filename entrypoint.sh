@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euo
+set -eo
 diff-lines() {
     local path=
     local line=
@@ -42,26 +42,28 @@ filter-by-changed-lines() {
     exit $exitCode
 }
 
-COMPARE_FROM=origin/${GITHUB_BASE_REF}
-COMPARE_TO=origin/${GITHUB_HEAD_REF}
-
-COMPARE_FROM_REF=$(git merge-base "${COMPARE_FROM}" "${COMPARE_TO}")
-COMPARE_TO_REF=${COMPARE_TO}
-
 INPUT_ONLY_CHANGED_FILES=${INPUT_ONLY_CHANGED_FILES:-${INPUT_ONLY_CHANGED_LINES:-"false"}}
 
-cp /action/problem-matcher.json /github/workflow/problem-matcher.json
+if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
+    COMPARE_FROM=origin/${GITHUB_BASE_REF}
+    COMPARE_TO=origin/${GITHUB_HEAD_REF}
 
-echo "::add-matcher::${RUNNER_TEMP}/_github_workflow/problem-matcher.json"
+    COMPARE_FROM_REF=$(git merge-base "${COMPARE_FROM}" "${COMPARE_TO}")
+    COMPARE_TO_REF=${COMPARE_TO}
+else
+    COMPARE_FROM="HEAD^"
+    COMPARE_TO="HEAD"
+    COMPARE_FROM_REF="HEAD^"
+    COMPARE_TO_REF="HEAD"
+fi
 
 if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
-    echo "Will only check changed files"
-    if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
-        CHANGED_FILES=$(git diff --name-only "${COMPARE_FROM_REF}" "${COMPARE_TO_REF}")
-    else
-        CHANGED_FILES=$(git diff --name-only)
-    fi
-    CHANGED_FILES=$(echo "${CHANGED_FILES}" | xargs ls -1d 2>/dev/null)
+    echo "Will only check changed files" 
+    set +e
+    CHANGED_FILES=$(git diff --name-only "${COMPARE_FROM_REF}" "${COMPARE_TO_REF}" | xargs -rt ls -1d 2>/dev/null)
+    set -e
+    echo "Will check files:"
+    echo "${CHANGED_FILES}"
 else
     echo "Will check all files"
 fi
@@ -94,10 +96,10 @@ if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
         status=$?
     fi
 else
+    echo "::add-matcher::${GITHUB_ACTION_PATH}/problem-matcher.json"
     ${INPUT_PHPCS_BIN_PATH} ${ENABLE_WARNINGS_FLAG} --report=checkstyle
+    echo "::remove-matcher owner=phpcs::"
     status=$?
 fi
-
-echo "::remove-matcher owner=phpcs::"
 
 exit $status

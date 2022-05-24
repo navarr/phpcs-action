@@ -9,7 +9,7 @@ inputs:
   phpcs_bin_path:
     description: 'Path to phpcs binary'
     required: false
-    default: 'phpcs'
+    default: 'vendor/bin/phpcs'
   installed_paths:
     description: 'Setting the installed standard paths'
     required: false
@@ -32,8 +32,18 @@ inputs:
     required: false
     default: ${{ github.token }}
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
+  using: 'composite'
+  steps:
+  - run: bash ${{ github.action_path }}/entrypoint.sh
+    shell: bash
+    env:
+      GITHUB_ACTION_PATH: ${{ github.action_path }}
+      INPUT_ONLY_CHANGED_FILES: ${{ inputs.only_changed_files }}
+      INPUT_TOKEN: ${{ inputs.token }}
+      INPUT_ONLY_CHANGED_LINES: ${{ inputs.only_changed_lines }}
+      INPUT_INSTALLED_PATHS: ${{ inputs.installed_paths }}
+      INPUT_PHPCS_BIN_PATH: ${{ inputs.phpcs_bin_path }}
+      INPUT_ENABLE_WARNINGS: ${{ inputs.enable_warnings }}
 branding:
   icon: 'zap'
   color: 'purple'
