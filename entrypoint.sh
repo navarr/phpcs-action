@@ -60,13 +60,8 @@ fi
 cp /action/problem-matcher.json /github/workflow/problem-matcher.json
 
 if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
-    echo "Will only check changed files"
-    if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then     
-        CHANGED_FILES=$(git diff --name-only "${COMPARE_FROM_REF}" "${COMPARE_TO_REF}")
-    else
-        CHANGED_FILES=$(git diff --name-only)
-    fi
-    CHANGED_FILES=$(echo "${CHANGED_FILES}" | xargs -rt ls -1d )
+    echo "Will only check changed files" 
+    CHANGED_FILES=$(git diff --name-only "${COMPARE_FROM_REF}" "${COMPARE_TO_REF} | xargs -rt ls -1d")
     echo "Will check files:"
     echo "${CHANGED_FILES}"
 else
