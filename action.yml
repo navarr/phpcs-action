@@ -35,6 +35,7 @@ runs:
   using: 'composite'
   steps:
   - run: ${{ github.action_path }}/entrypoint.sh
+    shell: bash
 branding:
   icon: 'zap'
   color: 'purple'
