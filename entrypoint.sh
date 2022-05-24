@@ -96,7 +96,7 @@ if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
         status=$?
     fi
 else
-    echo "::add-matcher::${{ github.action_path }}/problem-matcher.json"
+    echo "::add-matcher::${GITHUB_ACTION_PATH}/problem-matcher.json"
     ${INPUT_PHPCS_BIN_PATH} ${ENABLE_WARNINGS_FLAG} --report=checkstyle
     echo "::remove-matcher owner=phpcs::"
     status=$?
