@@ -61,6 +61,7 @@ if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
     else
         CHANGED_FILES=$(git diff --name-only)
     fi
+    CHANGED_FILES=$(echo "${CHANGED_FILES}" | xargs ls -1d 2>/dev/null)
 else
     echo "Will check all files"
 fi
