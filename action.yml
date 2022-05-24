@@ -34,10 +34,10 @@ inputs:
 runs:
   using: 'composite'
   steps:
-  - run: bash ${{ github.action_path }}/entrypoint.sh
+  - run: bash ${GITHUB_ACTION_PATH}/entrypoint.sh
     shell: bash
     env:
-      GITHUB_ACTION_PATH: ${{ github.action_path }}
+      GITHUB_ACTION_PATH: ${GITHUB_ACTION_PATH}
       INPUT_ONLY_CHANGED_FILES: ${{ inputs.only_changed_files }}
       INPUT_TOKEN: ${{ inputs.token }}
       INPUT_ONLY_CHANGED_LINES: ${{ inputs.only_changed_lines }}
