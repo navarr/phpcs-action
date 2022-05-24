@@ -57,8 +57,6 @@ else
     COMPARE_TO_REF="HEAD"
 fi
 
-cp /action/problem-matcher.json /github/workflow/problem-matcher.json
-
 if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
     echo "Will only check changed files" 
     set +e
@@ -98,7 +96,7 @@ if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
         status=$?
     fi
 else
-    echo "::add-matcher::${RUNNER_TEMP}/_github_workflow/problem-matcher.json"
+    echo "::add-matcher::${{ github.action_path }}/problem-matcher.json"
     ${INPUT_PHPCS_BIN_PATH} ${ENABLE_WARNINGS_FLAG} --report=checkstyle
     echo "::remove-matcher owner=phpcs::"
     status=$?
