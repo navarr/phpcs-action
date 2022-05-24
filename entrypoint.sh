@@ -44,7 +44,7 @@ filter-by-changed-lines() {
 
 INPUT_ONLY_CHANGED_FILES=${INPUT_ONLY_CHANGED_FILES:-${INPUT_ONLY_CHANGED_LINES:-"false"}}
 
-if [ "${GITHUB_EVENT_NAME}" = "pull_request"]; then
+if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
     COMPARE_FROM=origin/${GITHUB_BASE_REF}
     COMPARE_TO=origin/${GITHUB_HEAD_REF}
 
