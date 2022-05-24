@@ -9,7 +9,7 @@ inputs:
   phpcs_bin_path:
     description: 'Path to phpcs binary'
     required: false
-    default: 'phpcs'
+    default: 'vendor/bin/phpcs'
   installed_paths:
     description: 'Setting the installed standard paths'
     required: false
