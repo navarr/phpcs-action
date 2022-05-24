@@ -19,16 +19,27 @@ jobs:
       runs-on: ubuntu-latest
       steps:
         - uses: actions/checkout@v2
+        - name: Setup PHP
+          uses: shivammathur/setup-php@v2
+          with:
+            php-version: 8.1
+            tools: composer:v2
+        - name: Install Dependencies
+          run: composer install
         - name: PHPCS check
-          uses: navarr/phpcs-action@v2
+          uses: navarr/phpcs-action@v3
 ```
 
 If you want to check only files changed in the PR (**NOTE**: This requires checkout with depth 0)
 
 ```yaml
+        - name: Checkout
+          uses: actions/checkout@v2
+          with:
+            fetch-depth: 0
         ...
         - name: PHPCS check
-          uses: Mediotype/phpcs-action@v2
+          uses: navarr/phpcs-action@v3
           with:
             only_changed_files: true
 ```
@@ -36,19 +47,23 @@ If you want to check only files changed in the PR (**NOTE**: This requires check
 Or, if you want to limit it even further, you can report on only changed lines:
 
 ```yaml
+        - name: Checkout
+          uses: actions/checkout@v2
+          with:
+            fetch-depth: 0
         ...
         - name: PHPCS check
-          uses: Mediotype/phpcs-action@v2
+          uses: navarr/phpcs-action@v3
           with:
             only_changed_lines: true
 ```
 
-Eventually you could also check for warnings.
+To enable phpcs warnings:
 
 ```yaml
         ...
         - name: PHPCS check
-          uses: Mediotype/phpcs-action@v2
+          uses: navarr/phpcs-action@v3
           with:
             enable_warnings: true
 ```
@@ -67,7 +82,7 @@ It will also change phpcs `installed_paths` setting, but will prefer local phpcs
         - name: Install dependencies
           run: composer install --dev --prefer-dist --no-progress --no-suggest
         - name: PHPCS check
-          uses: Mediotype/phpcs-action@v2
+          uses: navarr/phpcs-action@v3
           with:
             phpcs_bin_path: './vendor/bin/phpcs'
 ```
@@ -77,7 +92,7 @@ It will also change phpcs `installed_paths` setting, but will prefer local phpcs
 ```yaml
         ...
         - name: PHPCS check
-          uses: Mediotype/phpcs-action@v2
+          uses: navarr/phpcs-action@v3
           with:
             installed_paths: '${{ github.workspace }}/vendor/phpcompatibility/php-compatibility'
 ```
