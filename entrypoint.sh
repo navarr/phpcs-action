@@ -42,8 +42,8 @@ filter-by-changed-lines() {
     exit $exitCode
 }
 
-COMPARE_FROM=origin/${GITHUB_BASE_REF}
-COMPARE_TO=origin/${GITHUB_HEAD_REF}
+COMPARE_FROM=${GITHUB_BASE_REF}
+COMPARE_TO=${GITHUB_HEAD_REF}
 
 COMPARE_FROM_REF=$(git merge-base "${COMPARE_FROM}" "${COMPARE_TO}")
 COMPARE_TO_REF=${COMPARE_TO}
@@ -52,8 +52,6 @@ INPUT_ONLY_CHANGED_FILES=${INPUT_ONLY_CHANGED_FILES:-${INPUT_ONLY_CHANGED_LINES:
 
 cp /action/problem-matcher.json /github/workflow/problem-matcher.json
 
-echo "::add-matcher::${RUNNER_TEMP}/_github_workflow/problem-matcher.json"
-
 if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
     echo "Will only check changed files"
     if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
@@ -61,7 +59,9 @@ if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
     else
         CHANGED_FILES=$(git diff --name-only)
     fi
-    CHANGED_FILES=$(echo "${CHANGED_FILES}" | xargs ls -1d 2>/dev/null)
+    CHANGED_FILES=$(echo "${CHANGED_FILES}" | xargs ls -1d 2>/dev/null )
+    echo "Will check files:"
+    echo "${CHANGED_FILES}"
 else
     echo "Will check all files"
 fi
@@ -94,10 +94,10 @@ if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
         status=$?
     fi
 else
+    echo "::add-matcher::${RUNNER_TEMP}/_github_workflow/problem-matcher.json"
     ${INPUT_PHPCS_BIN_PATH} ${ENABLE_WARNINGS_FLAG} --report=checkstyle
+    echo "::remove-matcher owner=phpcs::"
     status=$?
 fi
-
-echo "::remove-matcher owner=phpcs::"
 
 exit $status
