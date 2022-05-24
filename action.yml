@@ -32,8 +32,9 @@ inputs:
     required: false
     default: ${{ github.token }}
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
+  using: 'composite'
+  steps:
+  - run: ${{ github.action_path }}/entrypoint.sh
 branding:
   icon: 'zap'
   color: 'purple'
