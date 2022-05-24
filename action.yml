@@ -36,6 +36,8 @@ runs:
   steps:
   - run: bash ${{ github.action_path }}/entrypoint.sh
     shell: bash
+    env:
+      GITHUB_ACTION_PATH: ${{ github.action_path }}
 branding:
   icon: 'zap'
   color: 'purple'
