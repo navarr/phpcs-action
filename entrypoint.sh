@@ -42,12 +42,6 @@ filter-by-changed-lines() {
     exit $exitCode
 }
 
-COMPARE_FROM=${GITHUB_BASE_REF}
-COMPARE_TO=${GITHUB_HEAD_REF}
-
-COMPARE_FROM_REF=$(git merge-base "${COMPARE_FROM}" "${COMPARE_TO}")
-COMPARE_TO_REF=${COMPARE_TO}
-
 INPUT_ONLY_CHANGED_FILES=${INPUT_ONLY_CHANGED_FILES:-${INPUT_ONLY_CHANGED_LINES:-"false"}}
 
 cp /action/problem-matcher.json /github/workflow/problem-matcher.json
@@ -55,6 +49,12 @@ cp /action/problem-matcher.json /github/workflow/problem-matcher.json
 if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
     echo "Will only check changed files"
     if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
+        COMPARE_FROM=origin/${GITHUB_BASE_REF}
+        COMPARE_TO=origin/${GITHUB_HEAD_REF}
+
+        COMPARE_FROM_REF=$(git merge-base "${COMPARE_FROM}" "${COMPARE_TO}")
+        COMPARE_TO_REF=${COMPARE_TO}
+        
         CHANGED_FILES=$(git diff --name-only "${COMPARE_FROM_REF}" "${COMPARE_TO_REF}")
     else
         CHANGED_FILES=$(git diff --name-only)
