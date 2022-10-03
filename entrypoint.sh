@@ -58,7 +58,7 @@ else
 fi
 
 if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
-    echo "Will only check changed files" 
+    echo "Will only check changed files (${COMPARE_FROM_REF} -> ${COMPARE_TO_REF})"
     set +e
     CHANGED_FILES=$(git diff --name-only --diff-filter=d "${COMPARE_FROM_REF}" "${COMPARE_TO_REF}" | xargs -rt ls -1d 2>/dev/null)
     set -e
