@@ -60,7 +60,7 @@ fi
 if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
     echo "Will only check changed files" 
     set +e
-    CHANGED_FILES=$(git diff --name-only "${COMPARE_FROM_REF}" "${COMPARE_TO_REF}" | xargs -rt ls -1d 2>/dev/null)
+    CHANGED_FILES=$(git diff --name-only --diff-filter=d "${COMPARE_FROM_REF}" "${COMPARE_TO_REF}" | xargs -rt ls -1d 2>/dev/null)
     set -e
     echo "Will check files:"
     echo "${CHANGED_FILES}"
@@ -83,7 +83,7 @@ fi
 set +e
 if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
     if [ "${INPUT_ONLY_CHANGED_LINES}" = "true" ]; then
-        step1=$(git diff -U0 "${COMPARE_FROM_REF}" "${COMPARE_TO_REF}")
+        step1=$(git diff -U0 --diff-filter=d "${COMPARE_FROM_REF}" "${COMPARE_TO_REF}")
         step2=$(echo "${step1}" | diff-lines)
         step3=$(echo "${step2}" | grep -ve ':-')
         step4=$(echo "${step3}" | sed 's/:+.*//') # On some platforms, sed needs to have + escaped.  This isn't the case for Alpine sed.
