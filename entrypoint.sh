@@ -1,5 +1,6 @@
 #!/bin/bash
 set -eo
+git config --global --add safe.directory $(pwd)
 diff-lines() {
     local path=
     local line=
