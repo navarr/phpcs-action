@@ -45,20 +45,19 @@ filter-by-changed-lines() {
 
 INPUT_ONLY_CHANGED_FILES=${INPUT_ONLY_CHANGED_FILES:-${INPUT_ONLY_CHANGED_LINES:-"false"}}
 
-if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
-    COMPARE_FROM=origin/${GITHUB_BASE_REF}
-    COMPARE_TO=origin/${GITHUB_HEAD_REF}
-
-    COMPARE_FROM_REF=$(git merge-base "${COMPARE_FROM}" "${COMPARE_TO}")
-    COMPARE_TO_REF=${COMPARE_TO}
-else
-    COMPARE_FROM="HEAD^"
-    COMPARE_TO="HEAD"
-    COMPARE_FROM_REF="HEAD^"
-    COMPARE_TO_REF="HEAD"
-fi
-
 if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
+    if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
+        COMPARE_FROM=origin/${GITHUB_BASE_REF}
+        COMPARE_TO=origin/${GITHUB_HEAD_REF}
+
+        COMPARE_FROM_REF=$(git merge-base "${COMPARE_FROM}" "${COMPARE_TO}")
+        COMPARE_TO_REF=${COMPARE_TO}
+    else
+        COMPARE_FROM="HEAD^"
+        COMPARE_TO="HEAD"
+        COMPARE_FROM_REF="HEAD^"
+        COMPARE_TO_REF="HEAD"
+    fi
     echo "Will only check changed files (${COMPARE_FROM_REF} -> ${COMPARE_TO_REF})"
     set +e
     CHANGED_FILES=$(git diff --name-only --diff-filter=d "${COMPARE_FROM_REF}" "${COMPARE_TO_REF}" | xargs -rt ls -1d 2>/dev/null)
