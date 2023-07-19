@@ -81,6 +81,7 @@ else
 fi
 
 set +e
+echo "::add-matcher::${GITHUB_ACTION_PATH}/problem-matcher.json"
 if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
     if [ "${INPUT_ONLY_CHANGED_LINES}" = "true" ]; then
         step1=$(git diff -U0 --diff-filter=d "${COMPARE_FROM_REF}" "${COMPARE_TO_REF}")
@@ -96,10 +97,9 @@ if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
         status=$?
     fi
 else
-    echo "::add-matcher::${GITHUB_ACTION_PATH}/problem-matcher.json"
     ${INPUT_PHPCS_BIN_PATH} ${ENABLE_WARNINGS_FLAG} --report=checkstyle
-    echo "::remove-matcher owner=phpcs::"
     status=$?
 fi
+echo "::remove-matcher owner=phpcs::"
 
 exit $status
